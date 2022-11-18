@@ -1,6 +1,6 @@
 # ClienteBiblioteca
 
-## Curso: Sistemas de Bases de Datos
+## Curso: Sistemas de Bases de Datos O2022
 
 Docente. Edgar Lopez Meneses
 
