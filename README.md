@@ -38,7 +38,7 @@ Registra o actualiza un usuario con la siguiente información
 - Contraseña del nuevo usuario
 - Tipo de usuario que será (admin / solicitante)
 
-* El número de cuenta será la llave primaria por lo cual no podrá ser modificada.
+\* El número de cuenta será la llave primaria por lo cual no podrá ser modificada.
 
 #### Búsqueda [admin]
 
