@@ -1,0 +1,28 @@
+Que debe hacer el programa:
+
+Registrar
+Buscar
+Vizualizar
+
+prestamos de libros
+
+usuarios:
+- admin
+- user
+
+login con usr/passwd
+
+Modulos
+
+1. Registro y actualizaión de usarios [admin]
+2. Busqueda de usuarios [admin]
+3. Prestamos y devoluciones [user]
+
+Implementaciones necesarias
+
+  - Login
+  - MainAdmin
+    - Usuarios
+    - Libros
+  - MainUser
+    - Prestamos
