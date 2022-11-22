@@ -17,9 +17,9 @@ Libs: mysqlclient, gtk+-3.0
 Plataforma: Linux
 
 ## Instrucciones
-  $ ./compila
-  $ cd bin
-  $ ./BibClient
+    $ ./compila
+    $ cd bin
+    $ ./BibClient
 
 El archivo compila contiene un script que se encarga de compilar con las opciones necesarias.
 El archivo BibClient es el resultado final de compilar el proyecto.
