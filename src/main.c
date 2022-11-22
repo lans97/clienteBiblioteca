@@ -27,12 +27,6 @@ int main (int argc, char **argv)
 
     /* TODO: comboboxes for querries -> output to new window */
 
-
-    if( argc != 3 ){
-      fputs("Error: parametros incorrectos <\"query\">\n", stderr);
-      return 1;
-    }
-
     db = strdup(argv[1]);
     
     mysql_init(&mysql); // Prepara la conexión al servidor de bases de datos
