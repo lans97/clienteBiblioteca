@@ -11,6 +11,11 @@ Integrantes:
 - Dylan del Olmo
 - Marlene Serrano
 
+## Descripción
+Lenguaje: C
+Libs: mysqlclient, gtk+-3.0
+Plataforma: Linux
+
 ## Instrucciones
   $ ./compila
   $ cd bin
