@@ -11,7 +11,7 @@ struct Application{
     char* passwd;
 };
 
-Application_login(struct Application *app);
-Application_run(struct Application *app);
+void Application_login(struct Application *app);
+void Application_run(struct Application *app);
 
 #endif // APPLICATION_H_
