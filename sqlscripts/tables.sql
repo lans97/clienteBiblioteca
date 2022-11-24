@@ -19,7 +19,7 @@ CREATE TABLE py_libros (
 );
 
 CREATE TABLE py_solicitudes (
-    id_solicitud INT PRIMARY KEY AUTO INCREMENT,
+    id_solicitud INT PRIMARY KEY AUTO_INCREMENT,
     cuenta INT REFERENCES py_usuarios(cuenta),
     isbn INT REFERENCES py_libros(isbn),
     f_solicitud DATE,
