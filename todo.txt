@@ -1,0 +1,38 @@
+# TODO
+
+## SQL
+
+1. Diagramas de la base de datos, tablas etc.
+2. Comandos sql para crear tablas.
+3. Comandos sql para insertar al menos 20 registros en la tabla de libros y algunos usuarios.
+4. Procedure para agregar usuarios sin repetir (nombre+apellidos).
+5. Procedure para modificar un usuario dado un número de cuenta.
+6. Procedure para crear solicitud de prestamo sólo si hay disponibilidad. Debe notificar si no hay disponibilidad. Modificar la tab a de libros en el campo ej_disponibles y ej_prestados. Calcular fecha de entrega.
+7. Procedure para marcar una solicitud como resuelta (devolución). Debe modificar la tabla de libros en el campo ej_disponibles y ej_prestados.
+
+## UI
+
+Diagrama del diseño
+
+Incluye:
+
+- ventanas
+- cajas
+- botones
+- listas
+- ...
+
+Ref. https://docs.gtk.org/gtk3/visual_index.html
+
+revisar:
+- Stack
+- TreeView
+- Dialogos
+
+## C
+
+1. Login.
+2. Modulo de registro y actualización de usuarios (usa los SP pyp_nuevo_usuario y pyp_actualiza_usario).
+3. Modulo de busqueda de usuarios (usa un comando sql y pasa el querry a GTK)
+4. Modulo de prestamos y devoluciones (busca libros con un comando sql y usa los SP pyp_solicitud y pyp_devolución).
+
