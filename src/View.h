@@ -5,8 +5,9 @@
 
 struct View{
     GtkBuilder *builder;
-    GObject *winLogin;
-    GObject *winMain;
+    GObject *window;
+    GObject *button;
+    GError *error;
 };
 
 struct LoginData{
@@ -15,7 +16,6 @@ struct LoginData{
 };
 
 void View_init(struct View *View);
-struct LoginData View_login(struct View *View);
 void View_del(struct View *View);
 
 #endif // VIEW_H_
