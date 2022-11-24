@@ -8,11 +8,11 @@ CREATE TABLE py_users(
 	f_nac DATE,
 	email VARCHAR(30),
 	passwd VARCHAR(20),
-	admin BOOLEAN,
+	admin BOOLEAN
 )
 
 CREATE TABLE py_libros(
-	isbn INT,
+	isbn INT PRIMARY KEY,
 	nombre VARCHAR(50),
 	editorial VARCHAR(20),
 	prestados INT,
