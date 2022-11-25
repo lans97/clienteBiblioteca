@@ -8,15 +8,17 @@ int main(int argc, char* argv[]){
     gtk_init (&argc, &argv);
 
     struct View View;
+    struct Control Control;
+    struct Model Model;
     struct _TestWindow testwin;
+    Control.Model = &Model;
+    Control.View = &View;
     View.test = &testwin;
 
     View_init(&View);
+    Control_connect_test(&Control);
 
-    g_signal_connect (View.test->window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
-    g_signal_connect (View.test->b1, "clicked", G_CALLBACK (print_hello), NULL);
-    g_signal_connect (View.test->b2, "clicked", G_CALLBACK (print_hello), NULL);
-    g_signal_connect (View.test->b3, "clicked", G_CALLBACK (gtk_main_quit), NULL);
+
 
     gtk_main ();
 

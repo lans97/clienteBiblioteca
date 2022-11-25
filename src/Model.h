@@ -1,6 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 #include <mysql/mysql.h>
+#include <gtk/gtk.h>
 
 struct Model{
     MYSQL mysql;
@@ -14,9 +15,6 @@ struct Model{
     char* db;
 };
 
-void Model_init(struct Model *Model);
-void Model_login(struct Model *Model);
-void Model_querry(struct Model *Model);
-void Model_del(struct Model *Model);
+void Model_print_hello();
 
 #endif // MODEL_H
