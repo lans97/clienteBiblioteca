@@ -3,10 +3,29 @@
 
 #include <gtk/gtk.h>
 
+struct _LoginWindow {
+    GObject *window;
+    GObject *cuentaEntry;
+    GObject *passwordEntry;
+    GObject *button;
+};
+
+struct _AdminWindow {
+    GObject *window;
+    GObject *stack;
+    GObject *search;
+};
+
+struct _TestWindow {
+    GObject *window;
+    GObject *b1;
+    GObject *b2;
+    GObject *b3;
+};
+
 struct View{
     GtkBuilder *builder;
-    GObject *window;
-    GObject *button;
+    struct _TestWindow *test;
     GError *error;
 };
 
