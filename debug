@@ -1,0 +1,4 @@
+#!/bin/bash
+
+gcc -g -o bin/int/main.o -c src/main.c $(pkg-config --cflags --libs gtk+-3.0) 
+gcc -g -o bin/BibClient bin/int/main.o -lnsl -lm -lz -lmysqlclient 

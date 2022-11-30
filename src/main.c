@@ -49,7 +49,7 @@ int main (int argc, char **argv)
     }
 
     // Ejecuta el query
-    if( mysql_query(&mysql,"SELECT * FROM d_pais") ){
+    if( mysql_query(&mysql,"SELECT * FROM test") ){
         fprintf(stderr,"Error al procesar el query \"%s\" Error: %s\n",buffer,mysql_error(&mysql));
         exit(1);
     }
@@ -60,13 +60,16 @@ int main (int argc, char **argv)
         exit(1);
     }
 
-    int idPais;
-    char nombrePais[20]; 
+    int testid;
+    int testbool;
+    
     // Despliega el resultado del query
     while( (row = mysql_fetch_row(res)) ){
-	sscanf(row[0], "%d", &idPais);
-	strcpy(nombrePais, row[1]);
-	printf("%d - %s", idPais, nombrePais);
+
+	sscanf(row[0], "%d", &testid);
+	sscanf(row[1], "%d", &testbool);
+
+	printf("%d - %d", testid, testbool);
 	printf("\n");
     }
 
