@@ -10,13 +10,13 @@ int main(int argc, char* argv[]){
     struct View View;
     struct Control Control;
     struct Model Model;
-    struct _TestWindow testwin;
+    struct _LoginWindow loginW;
     Control.Model = &Model;
     Control.View = &View;
-    View.test = &testwin;
+    View.login = &loginW;
 
-    View_init(&View);
-    Control_connect_test(&Control);
+    Control_init(&Control);
+    Control_connect_login(&Control);
 
 
 

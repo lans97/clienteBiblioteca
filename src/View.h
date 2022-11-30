@@ -12,8 +12,12 @@ struct _LoginWindow {
 
 struct _AdminWindow {
     GObject *window;
-    GObject *stack;
-    GObject *search;
+
+};
+
+struct _SolicWindow {
+    GObject *window;
+
 };
 
 struct _TestWindow {
@@ -25,13 +29,10 @@ struct _TestWindow {
 
 struct View{
     GtkBuilder *builder;
-    struct _TestWindow *test;
+    struct _LoginWindow *login;
+    struct _AdminWindow *admin;
+    struct _SolicWindow *solic;
     GError *error;
-};
-
-struct LoginData{
-    char user[21];
-    char password[21];
 };
 
 void View_init(struct View *View);
