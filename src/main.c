@@ -49,7 +49,7 @@ int main (int argc, char **argv)
     }
 
     // Ejecuta el query
-    if( mysql_query(&mysql,"SELECT * FROM test") ){
+    if( mysql_query(&mysql,"SELECT * FROM test WHERE id = 5") ){
         fprintf(stderr,"Error al procesar el query \"%s\" Error: %s\n",buffer,mysql_error(&mysql));
         exit(1);
     }
@@ -62,16 +62,21 @@ int main (int argc, char **argv)
 
     int testid;
     int testbool;
+    int empty = 1;
     
     // Despliega el resultado del query
     while( (row = mysql_fetch_row(res)) ){
-
+	empty = 0;
 	sscanf(row[0], "%d", &testid);
 	sscanf(row[1], "%d", &testbool);
 
 	printf("%d - %d", testid, testbool);
 	printf("\n");
     }
+    if(empty){
+    	printf("empty set\n");
+    }
+	    
 
     mysql_free_result(res);
 
