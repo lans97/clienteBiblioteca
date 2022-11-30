@@ -27,31 +27,29 @@ int main (int argc, char **argv)
 
     /* TODO: comboboxes for querries -> output to new window */
 
-
+    /*
     if( argc != 3 ){
       fputs("Error: parametros incorrectos <\"query\">\n", stderr);
       return 1;
     }
+    */
 
-    db = strdup(argv[1]);
-    
     mysql_init(&mysql); // Prepara la conexión al servidor de bases de datos
 
     // Se conecta al servidor de base de datos y verifica que no haya error
-    if(!mysql_real_connect(&mysql, server, user, passwd, db, 0, NULL, 0)){
+    if(!mysql_real_connect(&mysql, server, user, passwd, "ic21lsm", 0, NULL, 0)){
       fprintf(stderr, "Error al conectarse a la BD: Error: %s\n",mysql_error(&mysql));
       return(0);
     }
 
     // Se conecta a la base de datos deseada
-    if( mysql_select_db(&mysql,argv[1]) ){
+    if( mysql_select_db(&mysql, "ic21lsm") ){
         fprintf(stderr,"No existe la base de datos seleccionada: Error: %s\n",mysql_error(&mysql));
         exit(1);
     }
 
     // Ejecuta el query
-	strcpy(buffer,argv[2]);
-    if( mysql_query(&mysql,buffer) ){
+    if( mysql_query(&mysql,"SELECT * FROM d_pais") ){
         fprintf(stderr,"Error al procesar el query \"%s\" Error: %s\n",buffer,mysql_error(&mysql));
         exit(1);
     }
@@ -62,20 +60,14 @@ int main (int argc, char **argv)
         exit(1);
     }
 
-   
+    int idPais;
+    char nombrePais[20]; 
     // Despliega el resultado del query
     while( (row = mysql_fetch_row(res)) ){
-        i = 0;
-
-        for( i=0 ; i < mysql_num_fields(res); i++ ){
-	  if(row[i] != NULL){
-            printf("%s ",row[i]);
-	  }
-	  else{
-	    printf(" \n");
-	  }
-        }
-        fputc('\n',stdout);
+	sscanf(row[0], "%d", &idPais);
+	strcpy(nombrePais, row[1]);
+	printf("%d - %s", idPais, nombrePais);
+	printf("\n");
     }
 
     mysql_free_result(res);
