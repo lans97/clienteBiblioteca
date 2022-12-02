@@ -95,7 +95,8 @@ void checkUsrPasswd(GtkWidget *widget, gpointer data){
     }
 
     if(row = mysql_fetch_row(res)){
-        sscanf(row[0], "%d", loginData->admin);
+
+        sscanf(row[0], "%d", &(loginData->admin));
         g_print("%s\n", (loginData->admin == 1) ? "admin" : "solic");
     }else{
         return;
