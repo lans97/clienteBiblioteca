@@ -82,7 +82,7 @@ void checkUsrPasswd(GtkWidget *widget, gpointer data){
 
     char qBuffer[1024];
 
-    sprintf(qBuffer, "SELECT admin FROM py_usuarios WHERE cuenta = %s AND password = %s", loginData->user, loginData->passwd);
+    sprintf(qBuffer, "SELECT isadmin FROM py_usuarios WHERE cuenta = %s AND password = %s", loginData->user, loginData->passwd);
 
     if(mysql_query(loginData->mysql, qBuffer)){
         fprintf(stderr, "Error: %s", mysql_error(loginData->mysql));
