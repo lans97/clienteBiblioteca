@@ -8,7 +8,7 @@ CREATE TABLE py_usuarios (
     carrera VARCHAR(50),
     semestre INT,
     f_nac DATE,
-    admin BOOLEAN);
+    isadmin BOOLEAN);
 
 CREATE TABLE py_libros (
     isbn INT PRIMARY KEY,
@@ -23,5 +23,6 @@ CREATE TABLE py_solicitudes (
     cuenta INT REFERENCES py_usuarios(cuenta),
     isbn INT REFERENCES py_libros(isbn),
     f_solicitud DATE,
-    f_limite DATE
+    f_limite DATE,
+    activa BOOLEAN
 );
