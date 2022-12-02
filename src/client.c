@@ -3,34 +3,23 @@
 #include <string.h>
 #include <stdio.h>
 
-struct usrpasswd{
-    MYSQL *mysql;
-    GObject *userEntry;
-    GObject *passwdEntry;
-    char user[20];
-    char passwd[20];
-    int admin;
-};
 
 static void print_hello (GtkWidget *widget, gpointer data);
 void checkUsrPasswd(GtkWidget *widget, gpointer data);
 
+GtkBuilder *builder;
+MYSQL mysql;
+
 int main(int argc, char* argv[]){
     gtk_init (&argc, &argv);
 
-    MYSQL mysql;
     MYSQL_RES *res;
     MYSQL_ROW row;
     MYSQL_FIELD *fields;
 
-    GtkBuilder *builder;
-    GObject *window;
-    GObject *userEntry;
-    GObject *passwdEntry;
+    GObject *loginWin;
     GObject *button;
     GError *error = NULL;
-
-    struct usrpasswd loginData;
 
     mysql_init(&mysql);
 
@@ -46,18 +35,12 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    window = gtk_builder_get_object(builder, "loginWindow");
-    g_signal_connect (window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    gtk_widget_set_visible(GTK_WIDGET(window), TRUE);
-    userEntry = gtk_builder_get_object(builder, "usrEntryLogin");
-    passwdEntry = gtk_builder_get_object(builder, "passwdEntryLogin");
+    loginWin = gtk_builder_get_object(builder, "loginWindow");
+    g_signal_connect (loginWin, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    gtk_widget_set_visible(GTK_WIDGET(loginWin), TRUE);
     button = gtk_builder_get_object(builder, "loginButtonLogin");
 
-    loginData.userEntry = userEntry;
-    loginData.passwdEntry = passwdEntry;
-    loginData.mysql = &mysql;
-
-    g_signal_connect (button, "clicked", G_CALLBACK(checkUsrPasswd), &loginData);
+    g_signal_connect (button, "clicked", G_CALLBACK(checkUsrPasswd), NULL);
 
     gtk_main ();
 
@@ -71,33 +54,45 @@ static void print_hello (GtkWidget *widget, gpointer data){
 }
 
 void checkUsrPasswd(GtkWidget *widget, gpointer data){
-    struct usrpasswd *loginData = (struct usrpasswd*) data;
-
     MYSQL_RES *res;
     MYSQL_ROW row;
 
-    strcpy(loginData->user, gtk_entry_get_text(GTK_ENTRY(loginData->userEntry)));
-    strcpy(loginData->passwd, gtk_entry_get_text(GTK_ENTRY(loginData->passwdEntry)));
-    g_print("Usr: %s\nPasswd: %s\n", loginData->user, loginData->passwd);
+    char user[10];
+    char passwd[21];
+    int admin;
+
+    GObject *userEntry = gtk_builder_get_object(builder, "usrEntryLogin");
+    GObject *passwdEntry = gtk_builder_get_object(builder, "passwdEntryLogin");
+    GObject *loginWin = gtk_builder_get_object(builder, "loginWindow");
+    GObject *userWin;
+
+    strcpy(user, gtk_entry_get_text(GTK_ENTRY(userEntry)));
+    strcpy(passwd, gtk_entry_get_text(GTK_ENTRY(passwdEntry)));
+    g_print("Usr: %s\nPasswd: %s\n", user, passwd);
 
     char qBuffer[1024];
 
-    sprintf(qBuffer, "SELECT isadmin FROM py_usuarios WHERE cuenta = %s AND password = %s", loginData->user, loginData->passwd);
+    sprintf(qBuffer, "SELECT isadmin FROM py_usuarios WHERE cuenta = %s AND password = %s", user, passwd);
 
-    if(mysql_query(loginData->mysql, qBuffer)){
-        fprintf(stderr, "Error: %s", mysql_error(loginData->mysql));
+    if(mysql_query(&mysql, qBuffer)){
+        fprintf(stderr, "Error: %s", mysql_error(&mysql));
         exit(EXIT_FAILURE);
     }
 
-    if(!(res = mysql_store_result(loginData->mysql))){
-        fprintf(stderr, "Error: %s", mysql_error(loginData->mysql));
+    if(!(res = mysql_store_result(&mysql))){
+        fprintf(stderr, "Error: %s", mysql_error(&mysql));
         exit(EXIT_FAILURE);
     }
 
     if(row = mysql_fetch_row(res)){
-
-        sscanf(row[0], "%d", &(loginData->admin));
-        g_print("%s\n", (loginData->admin == 1) ? "admin" : "solic");
+        sscanf(row[0], "%d", &(admin));
+        g_print("%s\n", (admin == 1) ? "admin" : "solic");
+        if (admin == 1)
+            userWin = gtk_builder_get_object(builder, "adminWindow");
+        else
+            userWin = gtk_builder_get_object(builder, "solicWindow");
+        gtk_widget_hide(GTK_WIDGET(loginWin));
+        gtk_widget_set_visible(GTK_WIDGET(userWin), TRUE);
     }else{
         return;
     }
