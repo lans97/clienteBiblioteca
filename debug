@@ -10,5 +10,3 @@ then
 fi
 
 gcc `pkg-config --cflags gtk+-3.0` -g -o bin/BibClient src/*.c `pkg-config --libs gtk+-3.0` -lnsl -lm -lz -lmysqlclient
-
->>>>>>> luis
