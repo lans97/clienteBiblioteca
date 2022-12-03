@@ -1,4 +1,14 @@
 #!/bin/bash
 
-gcc -g -o bin/int/main.o -c src/main.c $(pkg-config --cflags --libs gtk+-3.0) 
-gcc -g -o bin/BibClient bin/int/main.o -lnsl -lm -lz -lmysqlclient 
+if [ ! -d "bin/" ]
+then
+    mkdir bin
+    if [ ! -d  "bin/int/" ]
+    then
+        mkdir bin/int
+    fi
+fi
+
+gcc `pkg-config --cflags gtk+-3.0` -g -o bin/BibClient src/*.c `pkg-config --libs gtk+-3.0` -lnsl -lm -lz -lmysqlclient
+
+>>>>>>> luis
