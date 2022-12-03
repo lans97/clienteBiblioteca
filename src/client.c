@@ -134,3 +134,24 @@ void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
     GObject *win = gtk_builder_get_object(builder, "msgWindow");
     gtk_widget_hide(GTK_WIDGET(win));
 }
+
+void devButton_clicked_cb(GtkWidget *widget, gpointer data){
+
+}
+
+void presButton_clicked_cb(GtkWidget *widget, gpointer data){
+
+}
+
+void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
+
+}
+
+void buscaUser_clicked_cb(GtkWidget *widget, gpointer data){
+
+}
+
+void updateUser_clicked_cb(GtkWidget *widget, gpointer data){
+
+}
+
