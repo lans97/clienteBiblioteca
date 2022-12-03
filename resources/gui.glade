@@ -82,11 +82,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="buscarEntrySol">
+              <object class="GtkButton" id="buscaLibroSolic">
                 <property name="label" translatable="yes">Buscar</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="buscaLibro_clicked_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -181,6 +182,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="presButton_clicked_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -194,6 +196,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <signal name="clicked" handler="devButton_clicked_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -353,12 +356,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="loginButtonLogin">
+              <object class="GtkButton" id="loginButton">
                 <property name="label" translatable="yes">Login</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <signal name="clicked" handler="loginButtonLogin_clicked_cb" swapped="no"/>
+                <signal name="clicked" handler="loginButton_clicked_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -389,7 +392,7 @@
   </object>
   <object class="GtkWindow" id="msgWindow">
     <property name="can-focus">False</property>
-    <signal name="destroy" handler="gtk_widget_hide" swapped="yes"/>
+    <signal name="delete-event" handler="gtk_widget_hide" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -424,13 +427,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="buttonMsg">
+              <object class="GtkButton" id="msgButton">
                 <property name="label" translatable="yes">Ok</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <signal name="clicked" handler="buttonMsj_clicked_cb" swapped="no"/>
-                <signal name="delete-event" handler="gtk_widget_hide" swapped="yes"/>
+                <signal name="clicked" handler="msgButton_clicked_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -705,12 +707,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="regButtonReg">
+                  <object class="GtkButton" id="regUserAdmin">
                     <property name="label" translatable="yes">Registrar</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <signal name="clicked" handler="regButtonReg_clicked_cb" swapped="no"/>
+                    <signal name="clicked" handler="regUser_clicked_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
@@ -974,12 +976,12 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="udbButtonUd">
+                      <object class="GtkButton" id="updateUserAdmin">
                         <property name="label" translatable="yes">Actualizar</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
-                        <signal name="clicked" handler="udbButtonUd_clicked_cb" swapped="no"/>
+                        <signal name="clicked" handler="updateUser_clicked_cb" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1075,12 +1077,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="buscarButtonBusca">
+                  <object class="GtkButton" id="buscaUserAdmin">
                     <property name="label" translatable="yes">Buscar</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <signal name="clicked" handler="buscarButtonBusca_clicked_cb" swapped="no"/>
+                    <signal name="clicked" handler="buscaUser_clicked_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1246,12 +1248,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="buscarEntryBusca">
+                  <object class="GtkButton" id="buscaLibroAdmin">
                     <property name="label" translatable="yes">Buscar</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <signal name="clicked" handler="buscarEntryBusca_clicked_cb" swapped="no"/>
+                    <signal name="clicked" handler="buscaLibro_clicked_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1349,7 +1351,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <signal name="clicked" handler="presButtonAdmin_clicked_cb" swapped="no"/>
+                    <signal name="clicked" handler="presButton_clicked_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1363,7 +1365,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <signal name="clicked" handler="devButtonAdmin_clicked_cb" swapped="no"/>
+                    <signal name="clicked" handler="devButton_clicked_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

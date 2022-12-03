@@ -4,11 +4,24 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#define DB_SERVER "localhost"
+#define DB_USER "ic21lsm"
+#define DB_PASSWD "200490"
+#define DB_NAME "ic21lsm"
 
+// for debug
 static void print_hello (GtkWidget *widget, gpointer data);
-void loginButtonLogin_clicked_cb(GtkWidget *widget, gpointer data);
-void regButtonReg_clicked_cb(GtkWidget *widget, gpointer data);
-void buttonMsj_clicked_cb(GtkWidget *widget, gpointer data);
+
+//button functions
+void devButton_clicked_cb(GtkWidget *widget, gpointer data);
+void presButton_clicked_cb(GtkWidget *widget, gpointer data);
+void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data);
+void buscaUser_clicked_cb(GtkWidget *widget, gpointer data);
+void updateUser_clicked_cb(GtkWidget *widget, gpointer data);
+void regUser_clicked_cb(GtkWidget *widget, gpointer data);
+void msgButton_clicked_cb(GtkWidget *widget, gpointer data); // done
+void loginButtonLogin_clicked_cb(GtkWidget *widget, gpointer data); // done
+
 
 GtkBuilder *builder;
 MYSQL mysql;
@@ -28,7 +41,7 @@ int main(int argc, char* argv[]){
 
     mysql_init(&mysql);
 
-    if(!mysql_real_connect(&mysql, "localhost", "ic21lsm", "200490", "ic21lsm", 0, NULL, 0)) {
+    if(!mysql_real_connect(&mysql, DB_SERVER, DB_USER, DB_PASSWD, DB_NAME, 0, NULL, 0)) {
         fprintf(stderr, "Error al conectarse: %s\n", mysql_error(&mysql));
         exit(EXIT_FAILURE);
     }
@@ -53,7 +66,7 @@ static void print_hello (GtkWidget *widget, gpointer data){
     g_print ("Hello World\n");
 }
 
-void loginButtonLogin_clicked_cb(GtkWidget *widget, gpointer data){
+void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
     MYSQL_RES *res;
     MYSQL_ROW row;
 
@@ -113,11 +126,11 @@ void loginButtonLogin_clicked_cb(GtkWidget *widget, gpointer data){
     }
 }
 
-void regButtonReg_clicked_cb(GtkWidget *widget, gpointer data){
+void regUser_clicked_cb(GtkWidget *widget, gpointer data){
 
 }
 
-void buttonMsj_clicked_cb(GtkWidget *widget, gpointer data){
+void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
     GObject *win = gtk_builder_get_object(builder, "msgWindow");
     gtk_widget_hide(GTK_WIDGET(win));
 }
