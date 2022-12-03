@@ -389,14 +389,14 @@
   </object>
   <object class="GtkWindow" id="msgWindow">
     <property name="can-focus">False</property>
-    <signal name="destroy" handler="gtk_widget_hide" swapped="yes"/>
+    <signal name="destroy" handler="gtk_widget_hide" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkLabel" id="labelMsg">
+          <object class="GtkLabel" id="labelMsj">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="label" translatable="yes">Mensaje</property>
@@ -424,7 +424,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="buttonMsg">
+              <object class="GtkButton" id="buttonMsj">
                 <property name="label" translatable="yes">Ok</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
