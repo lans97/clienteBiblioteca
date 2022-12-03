@@ -127,6 +127,42 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
 }
 
 void regUser_clicked_cb(GtkWidget *widget, gpointer data){
+    GObject *cuenta_e = gtk_builder_get_object(builder, "cuentaEntryReg");
+    GObject *nombre_e = gtk_builder_get_object(builder, "nombreEntryReg");
+    GObject *apaterno_e = gtk_builder_get_object(builder, "apatEntryReg");
+    GObject *amaterno_e = gtk_builder_get_object(builder, "amatEntryReg");
+    GObject *carrera_e = gtk_builder_get_object(builder, "carreraEntryReg");
+    GObject *semestre_c = gtk_builder_get_object(builder, "semestreComboReg");
+    GObject *fnac_c = gtk_builder_get_object(builder, "fnacCalReg");
+    GObject *mail_e = gtk_builder_get_object(builder, "emailEntryReg");
+    GObject *passwd_e = gtk_builder_get_object(builder, "passwordEntryReg");
+    GObject *admin_b = gtk_builder_get_object(builder, "adminCheckReg");
+
+    int semestre_i, admin, fnac_d, fnac_m, fnac_a;
+    const char *cuenta, *nombre, *apaterno, *amaterno, *carrera, *semestre_s, *mail, *passwd;
+
+    cuenta = gtk_entry_get_text(GTK_ENTRY(cuenta_e));
+    nombre = gtk_entry_get_text(GTK_ENTRY(nombre_e));
+    apaterno = gtk_entry_get_text(GTK_ENTRY(apaterno_e));
+    amaterno = gtk_entry_get_text(GTK_ENTRY(amaterno_e));
+    carrera = gtk_entry_get_text(GTK_ENTRY(carrera_e));
+    semestre_i = gtk_combo_box_get_active(GTK_COMBO_BOX(semestre_c)) + 1;
+    gtk_calendar_get_date(GTK_CALENDAR(fnac_c), &fnac_a, &fnac_m, &fnac_d);
+    fnac_m++;
+    mail = gtk_entry_get_text(GTK_ENTRY(mail_e));
+    passwd = gtk_entry_get_text(GTK_ENTRY(passwd_e));
+    admin = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(admin_b));
+
+    g_print("Cuenta: %s\n", cuenta);
+    g_print("Nombre: %s\n", nombre);
+    g_print("A_Paterno: %s\n", apaterno);
+    g_print("A_Materno: %s\n", amaterno);
+    g_print("Carrera: %s\n", carrera);
+    g_print("Semestre: %d\n", semestre_i);
+    g_print("F_Nac: %d-%d-%d\n", fnac_a, fnac_m, fnac_d);
+    g_print("Mail: %s\n", mail);
+    g_print("Passwd: %s\n", passwd);
+    g_print("Admin: %d\n", admin);
 
 }
 
