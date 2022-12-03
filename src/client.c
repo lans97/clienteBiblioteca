@@ -78,10 +78,11 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
     GObject *passwdEntry = gtk_builder_get_object(builder, "passwdEntryLogin");
     GObject *loginWin = gtk_builder_get_object(builder, "loginWindow");
     GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
-    GObject *userWin;
     GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+    GObject *userWin;
 
-    char tempBuffer[1024];
+    char queryBuffer[1024];
+    char errorBuffer[1024];
 
     strcpy(user, gtk_entry_get_text(GTK_ENTRY(userEntry)));
     strcpy(passwd, gtk_entry_get_text(GTK_ENTRY(passwdEntry)));
@@ -90,23 +91,27 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
 
     while (*s) {
         if (isdigit(*s++) == 0){
-            strcpy(tempBuffer, "El número de cuenta sólo incluye números!!");
-            gtk_label_set_text(GTK_LABEL(msgLabel), tempBuffer);
+            sprintf(errorBuffer, "El número de cuenta sólo incluye números!!");
+            gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
             gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
             return;
         }
     }
 
-    sprintf(tempBuffer, "SELECT isadmin FROM py_usuarios WHERE cuenta = %s AND password = \"%s\"", user, passwd);
+    sprintf(queryBuffer, "SELECT isadmin FROM py_usuarios WHERE cuenta = %s AND password = \"%s\"", user, passwd);
 
-    if(mysql_query(&mysql, tempBuffer)){
-        fprintf(stderr, "Error: %s", mysql_error(&mysql));
-        exit(EXIT_FAILURE);
+    if(mysql_query(&mysql, queryBuffer)){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
     }
 
     if(!(res = mysql_store_result(&mysql))){
-        fprintf(stderr, "Error: %s", mysql_error(&mysql));
-        exit(EXIT_FAILURE);
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
     }
 
     if(row = mysql_fetch_row(res)){
@@ -127,6 +132,13 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
 }
 
 void regUser_clicked_cb(GtkWidget *widget, gpointer data){
+
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+
+    GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
+    GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+
     GObject *cuenta_e = gtk_builder_get_object(builder, "cuentaEntryReg");
     GObject *nombre_e = gtk_builder_get_object(builder, "nombreEntryReg");
     GObject *apaterno_e = gtk_builder_get_object(builder, "apatEntryReg");
@@ -140,6 +152,8 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
 
     int semestre_i, admin, fnac_d, fnac_m, fnac_a;
     const char *cuenta, *nombre, *apaterno, *amaterno, *carrera, *semestre_s, *mail, *passwd;
+
+    char queryBuffer[1024], errorBuffer[1024];
 
     cuenta = gtk_entry_get_text(GTK_ENTRY(cuenta_e));
     nombre = gtk_entry_get_text(GTK_ENTRY(nombre_e));
@@ -164,6 +178,25 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
     g_print("Passwd: %s\n", passwd);
     g_print("Admin: %d\n", admin);
 
+    // TODO: Insertar campos leídos en la base de datos
+
+    sprintf(queryBuffer, "SELECT isadmin FROM py_usuarios");
+
+    if(mysql_query(&mysql, queryBuffer)){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    if(!(res = mysql_store_result(&mysql))){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    while(row = mysql_fetch_row(res));
 }
 
 void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
