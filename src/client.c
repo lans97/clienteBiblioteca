@@ -197,22 +197,23 @@ void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
 }
 
 void devButton_clicked_cb(GtkWidget *widget, gpointer data){
-
+    // CALL p_resuelve_solicitud(usuario activo)
 }
 
 void presButton_clicked_cb(GtkWidget *widget, gpointer data){
-
+    // CALL p_alta_solicitud(usuario activo, libro seleccionado)
 }
 
 void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
-
+    // SELECT isbn libro editorial disponibles prestados from py_libros;
+    // pasar a liststore nombre en gui.glade
 }
 
 void buscaUser_clicked_cb(GtkWidget *widget, gpointer data){
-
+    // SELECT n_cuenta, nombre, apat, isbn, libro, f_solicitud, f_limite
 }
 
 void updateUser_clicked_cb(GtkWidget *widget, gpointer data){
-
+    // UPDATE py_usuarios SET %s = \'%s\'    , columna, valor nuevo
 }
 
