@@ -1,7 +1,7 @@
 DROP PROCEDURE p_resuelve_solicitud;
 DELIMITER $
 
-CREATE PROCEDURE p_resuelve_solicitud (v_n_cuenta INTEGER)
+CREATE PROCEDURE p_resuelve_solicitud (v_n_cuenta INTEGER, v_isbn INTEGER)
 BEGIN
 
     DECLARE f_id_solicitud  INT;
@@ -10,7 +10,7 @@ BEGIN
     DECLARE f_prestados     INT;
     DECLARE f_activa        BOOLEAN DEFAULT FALSE;
 
-    DECLARE cursor_solicitudes CURSOR FOR SELECT id_solicitud, activa FROM py_solicitudes WHERE n_cuenta = v_n_cuenta AND activa = TRUE;
+    DECLARE cursor_solicitudes CURSOR FOR SELECT id_solicitud, activa FROM py_solicitudes WHERE n_cuenta = v_n_cuenta AND activa = TRUE AND isbn = v_isbn;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET f_activa = FALSE;
 
     OPEN cursor_solicitudes;
@@ -18,9 +18,8 @@ BEGIN
     CLOSE cursor_solicitudes;
 
     IF f_activa THEN
-        SET @f_isbn = (SELECT isbn FROM py_solicitudes WHERE n_cuenta = v_n_cuenta AND activa = TRUE);
-        SET @f_disponibles = (SELECT disponibles FROM py_libros WHERE isbn = @f_isbn);
-        SET @f_prestados = (SELECT prestados FROM py_libros WHERE isbn = @f_isbn);
+        SET @f_disponibles = (SELECT disponibles FROM py_libros WHERE isbn = v_isbn);
+        SET @f_prestados = (SELECT prestados FROM py_libros WHERE isbn = v_isbn);
 
         UPDATE py_solicitudes
         SET
@@ -35,7 +34,7 @@ BEGIN
 
         SELECT CONCAT('Tu solcitud se resolvió con éxito') AS msg;
     ELSE
-        SIGNAL SQLSTATE '60003' SET MESSAGE_TEXT = 'Tu numero de cuenta no tiene una solicitud activa';
+        SIGNAL SQLSTATE '60003' SET MESSAGE_TEXT = 'Tu numero de cuenta no tiene una solicitud activa con ese libro';
     END IF;
 END $
 
