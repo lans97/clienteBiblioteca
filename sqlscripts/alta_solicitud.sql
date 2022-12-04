@@ -37,7 +37,6 @@ BEGIN
             prestados = @f_prestados + 1
         WHERE v_id_isbn = isbn;
 
-        SELECT 'Tu solcitud se realizó con éxito' AS msg;
     ELSE
         SIGNAL SQLSTATE '60002' SET MESSAGE_TEXT = 'No hay libros disponibles';
     END IF;

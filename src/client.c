@@ -25,6 +25,8 @@ void loginButtonLogin_clicked_cb(GtkWidget *widget, gpointer data); // done
 
 GtkBuilder *builder;
 MYSQL mysql;
+unsigned char _userIsAdmin;
+unsigned int _userID;
 
 int main(int argc, char* argv[]){
     gtk_init (&argc, &argv);
@@ -120,7 +122,7 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
 
     sprintf(queryBuffer, "SELECT tipo_usuario FROM py_usuarios WHERE n_cuenta = %s AND pswd = \"%s\"", user, passwd);
 
-    if(mysql_query(&mysql, queryBuffer)){
+    if(mysql_query(&mysql, queryBuffer) != 0){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
@@ -129,18 +131,20 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
 
     if(!(res = mysql_store_result(&mysql))){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        mysql_free_result(res);
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
         return;
     }
 
     if(row = mysql_fetch_row(res)){
-        sscanf(row[0], "%d", &(admin));
-        if (admin == 1)
+        sscanf(row[0], "%d", &(_userIsAdmin));
+        if (_userIsAdmin == 1)
             userWin = gtk_builder_get_object(builder, "adminWindow");
         else
             userWin = gtk_builder_get_object(builder, "solicWindow");
 
+        sscanf(user, "%d", &_userID);
         gtk_widget_hide(GTK_WIDGET(loginWin));
         gtk_widget_set_visible(GTK_WIDGET(userWin), TRUE);
     }else{
@@ -205,7 +209,7 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
     sprintf(queryBuffer, "CALL p_insertar_usuario(%s, \"%s\", \"%s\", \"%s\", \"%s\", %d, \"%s\", \"%s\", \"%s\", %d)",
             cuenta, nombre, apaterno, amaterno, carrera, semestre, fnac, mail, passwd, admin);
 
-    if(mysql_query(&mysql, queryBuffer)){
+    if(mysql_query(&mysql, queryBuffer) != 0){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
@@ -228,6 +232,42 @@ void devButton_clicked_cb(GtkWidget *widget, gpointer data){
 void presButton_clicked_cb(GtkWidget *widget, gpointer data){
     // CALL p_alta_solicitud(usuario activo, libro seleccionado)
     // usar gtk_tree_view_selection
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+
+    GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
+    GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    GtkTreeModel *model;
+    gint isbn_s;
+
+    if(_userIsAdmin){
+        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "lats"));
+    }
+    else{
+        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "luts"));
+    }
+
+    if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+        return;
+
+    gtk_tree_model_get(model, &iter, 0, &isbn_s, -1);
+
+    char queryBuffer[1024], errorBuffer[1024];
+
+    sprintf(queryBuffer, "CALL p_alta_solicitud(%i, %i)", _userID, isbn_s);
+
+    if (mysql_query(&mysql, queryBuffer) != 0) {
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    gtk_label_set_text(GTK_LABEL(msgLabel), "Su solicitud ha sido completada con exito.");
+    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
 }
 
 void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
@@ -238,8 +278,17 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
     GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
     GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
 
-    GObject *columnCombo = gtk_builder_get_object(builder, "librosComboBusca");
-    GObject *searchEntry = gtk_builder_get_object(builder, "librosEntryBusca");
+    GObject *columnCombo;
+    GObject *searchEntry;
+
+    if(_userIsAdmin){
+         columnCombo = gtk_builder_get_object(builder, "librosComboBusca");
+         searchEntry = gtk_builder_get_object(builder, "librosEntryBusca");
+    }
+    else{
+         columnCombo = gtk_builder_get_object(builder, "librosComboSol");
+         searchEntry = gtk_builder_get_object(builder, "librosEntrySol");
+    }
 
     char queryBuffer[1024], errorBuffer[1024];
 
@@ -270,7 +319,7 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
             break;
     }
 
-    if(mysql_query(&mysql, queryBuffer)){
+    if(mysql_query(&mysql, queryBuffer) != 0){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
@@ -279,6 +328,7 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
 
     if(!(res = mysql_store_result(&mysql))){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        mysql_free_result(res);
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
         return;
@@ -305,6 +355,8 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
         gtk_tree_store_set(libros_ts, &columna, 3, pres_r, -1);
         gtk_tree_store_set(libros_ts, &columna, 4, disp_r, -1);
     }
+
+    mysql_free_result(res);
 
 }
 

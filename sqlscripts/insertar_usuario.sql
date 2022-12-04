@@ -63,8 +63,6 @@ proc_lable: BEGIN
         v_tipo_usuario
     );
 
-    SELECT * FROM py_usuarios WHERE n_cuenta = v_cuenta;
-
 END $$
 
 DELIMITER ;

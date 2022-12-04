@@ -32,7 +32,6 @@ BEGIN
             disponibles = @f_disponibles + 1
         WHERE isbn = @f_isbn;
 
-        SELECT CONCAT('Tu solcitud se resolvió con éxito') AS msg;
     ELSE
         SIGNAL SQLSTATE '60003' SET MESSAGE_TEXT = 'Tu numero de cuenta no tiene una solicitud activa con ese libro';
     END IF;
