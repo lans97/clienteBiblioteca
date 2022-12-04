@@ -98,7 +98,7 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
         }
     }
 
-    sprintf(queryBuffer, "SELECT isadmin FROM py_usuarios WHERE cuenta = %s AND password = \"%s\"", user, passwd);
+    sprintf(queryBuffer, "SELECT tipo_usuario FROM py_usuarios WHERE n_cuenta = %s AND pswd = \"%s\"", user, passwd);
 
     if(mysql_query(&mysql, queryBuffer)){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
@@ -150,8 +150,8 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
     GObject *passwd_e = gtk_builder_get_object(builder, "passwordEntryReg");
     GObject *admin_b = gtk_builder_get_object(builder, "adminCheckReg");
 
-    int semestre_i, admin, fnac_d, fnac_m, fnac_a;
-    const char *cuenta, *nombre, *apaterno, *amaterno, *carrera, *semestre_s, *mail, *passwd;
+    int semestre, admin, fnac_d, fnac_m, fnac_a;
+    const char *cuenta, *nombre, *apaterno, *amaterno, *carrera, *mail, *passwd, fnac[12];
 
     char queryBuffer[1024], errorBuffer[1024];
 
@@ -160,27 +160,19 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
     apaterno = gtk_entry_get_text(GTK_ENTRY(apaterno_e));
     amaterno = gtk_entry_get_text(GTK_ENTRY(amaterno_e));
     carrera = gtk_entry_get_text(GTK_ENTRY(carrera_e));
-    semestre_i = gtk_combo_box_get_active(GTK_COMBO_BOX(semestre_c)) + 1;
+    semestre = gtk_combo_box_get_active(GTK_COMBO_BOX(semestre_c)) + 1;
     gtk_calendar_get_date(GTK_CALENDAR(fnac_c), &fnac_a, &fnac_m, &fnac_d);
     fnac_m++;
     mail = gtk_entry_get_text(GTK_ENTRY(mail_e));
     passwd = gtk_entry_get_text(GTK_ENTRY(passwd_e));
     admin = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(admin_b));
 
-    g_print("Cuenta: %s\n", cuenta);
-    g_print("Nombre: %s\n", nombre);
-    g_print("A_Paterno: %s\n", apaterno);
-    g_print("A_Materno: %s\n", amaterno);
-    g_print("Carrera: %s\n", carrera);
-    g_print("Semestre: %d\n", semestre_i);
-    g_print("F_Nac: %d-%d-%d\n", fnac_a, fnac_m, fnac_d);
-    g_print("Mail: %s\n", mail);
-    g_print("Passwd: %s\n", passwd);
-    g_print("Admin: %d\n", admin);
+    sprintf(fnac, "%d/%d/%d", fnac_a, fnac_m, fnac_d);
 
     // TODO: Insertar campos leídos en la base de datos
 
-    sprintf(queryBuffer, "SELECT isadmin FROM py_usuarios");
+    sprintf(queryBuffer, "CALL p_insertar_usuario(%s, \"%s\", \"%s\", \"%s\", \"%s\", %d, \"%s\", \"%s\", \"%s\", %d)",
+            cuenta, nombre, apaterno, amaterno, carrera, semestre, fnac, mail, passwd, admin);
 
     if(mysql_query(&mysql, queryBuffer)){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));

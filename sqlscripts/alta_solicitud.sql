@@ -1,8 +1,8 @@
-DROP PROCEDURE alta_solicitud;
+DROP PROCEDURE p_alta_solicitud;
 
 DELIMITER $
 
-CREATE PROCEDURE alta_solicitud (
+CREATE PROCEDURE p_alta_solicitud (
     v_n_cuenta INTEGER,
     v_id_isbn INTEGER
 )
@@ -23,9 +23,8 @@ BEGIN
     FETCH NEXT FROM cursor_solicitudes INTO f_activa;
     CLOSE cursor_solicitudes;
 
-    SELECT @f_disponibles := disponibles, @f_prestados := prestados FROM py_libros WHERE isbn = v_id_isbn;
-
-    SELECT !f_activa, @f_disponibles;
+    SET @f_disponibles = (SELECT disponibles FROM py_libros WHERE isbn = v_id_isbn);
+    SET @f_prestados = (SELECT prestados FROM py_libros WHERE isbn = v_id_isbn);
 
     IF @f_disponibles > 0 AND !f_activa THEN
         SELECT DATE(curdate()) INTO f_solicitud_v;
@@ -49,7 +48,7 @@ BEGIN
 
         SELECT 'Tu solcitud se realizó con éxito' AS msg;
     ELSE
-        SELECT CONCAT('No hay libros disponibles con el ISBN ', v_id_isbn, ' o ya cuentas con una solicitud activa') AS msg;
+        SIGNAL SQLSTATE '60002' SET MESSAGE_TEXT = 'No hay libros disponibles o ya cuentas con una solicitud activa';
     END IF;
 END $
 
