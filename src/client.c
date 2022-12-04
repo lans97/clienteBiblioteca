@@ -227,6 +227,7 @@ void devButton_clicked_cb(GtkWidget *widget, gpointer data){
 
 void presButton_clicked_cb(GtkWidget *widget, gpointer data){
     // CALL p_alta_solicitud(usuario activo, libro seleccionado)
+    // usar gtk_tree_view_selection
 }
 
 void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
