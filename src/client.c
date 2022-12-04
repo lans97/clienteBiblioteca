@@ -151,7 +151,8 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
     GObject *admin_b = gtk_builder_get_object(builder, "adminCheckReg");
 
     int semestre, admin, fnac_d, fnac_m, fnac_a;
-    const char *cuenta, *nombre, *apaterno, *amaterno, *carrera, *mail, *passwd, fnac[12];
+    const char *cuenta, *nombre, *apaterno, *amaterno, *carrera, *mail, *passwd;
+    char fnac[12];
 
     char queryBuffer[1024], errorBuffer[1024];
 
@@ -187,8 +188,8 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
         return;
     }
-
-    while(row = mysql_fetch_row(res));
+        gtk_label_set_text(GTK_LABEL(msgLabel), "El usuario ha sido agregado con exito.");
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
 }
 
 void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
