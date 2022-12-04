@@ -22,7 +22,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="librosQuery">
+  <object class="GtkTreeStore" id="librosQuery">
     <columns>
       <!-- column-name isbn -->
       <column type="gint"/>
@@ -30,9 +30,9 @@
       <column type="gchararray"/>
       <!-- column-name editorial -->
       <column type="gchararray"/>
-      <!-- column-name disponibles -->
-      <column type="gint"/>
       <!-- column-name prestados -->
+      <column type="gint"/>
+      <!-- column-name disponibles -->
       <column type="gint"/>
     </columns>
   </object>
@@ -103,28 +103,29 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTreeView" id="librosViewSol">
+          <object class="GtkTreeView" id="librosSolView">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="model">librosQuery</property>
-            <property name="search-column">0</property>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection"/>
+            </child>
             <child>
-              <object class="GtkTreeViewColumn">
+              <object class="GtkTreeViewColumn" id="lsc0">
                 <property name="title" translatable="yes">ISBN</property>
                 <child>
-                  <object class="GtkCellRendererText"/>
+                  <object class="GtkCellRendererText" id="lsr0"/>
                   <attributes>
-                    <attribute name="scale">10</attribute>
                     <attribute name="text">0</attribute>
                   </attributes>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn">
-                <property name="title" translatable="yes">Nombre</property>
+              <object class="GtkTreeViewColumn" id="lsc1">
+                <property name="title" translatable="yes">Título</property>
                 <child>
-                  <object class="GtkCellRendererText"/>
+                  <object class="GtkCellRendererText" id="lsr1"/>
                   <attributes>
                     <attribute name="text">1</attribute>
                   </attributes>
@@ -132,10 +133,10 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn">
+              <object class="GtkTreeViewColumn" id="lsc2">
                 <property name="title" translatable="yes">Editorial</property>
                 <child>
-                  <object class="GtkCellRendererText"/>
+                  <object class="GtkCellRendererText" id="lsr2"/>
                   <attributes>
                     <attribute name="text">2</attribute>
                   </attributes>
@@ -143,10 +144,10 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn">
-                <property name="title" translatable="yes">Disponibles</property>
+              <object class="GtkTreeViewColumn" id="lsc3">
+                <property name="title" translatable="yes">Prestados</property>
                 <child>
-                  <object class="GtkCellRendererText"/>
+                  <object class="GtkCellRendererText" id="lsr3"/>
                   <attributes>
                     <attribute name="text">3</attribute>
                   </attributes>
@@ -154,10 +155,10 @@
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn">
-                <property name="title" translatable="yes">Prestados</property>
+              <object class="GtkTreeViewColumn" id="lsc4">
+                <property name="title" translatable="yes">Disponibles</property>
                 <child>
-                  <object class="GtkCellRendererText"/>
+                  <object class="GtkCellRendererText" id="lsr4"/>
                   <attributes>
                     <attribute name="text">4</attribute>
                   </attributes>
@@ -528,15 +529,15 @@
       <column type="gint"/>
       <!-- column-name nombre -->
       <column type="gchararray"/>
-      <!-- column-name a_paterno -->
+      <!-- column-name apaterno -->
       <column type="gchararray"/>
       <!-- column-name isbn -->
       <column type="gint"/>
-      <!-- column-name libro -->
+      <!-- column-name titulo -->
       <column type="gchararray"/>
-      <!-- column-name f_solicitud -->
+      <!-- column-name f_sol -->
       <column type="gchararray"/>
-      <!-- column-name f_limite -->
+      <!-- column-name f_lim -->
       <column type="gchararray"/>
     </columns>
   </object>
@@ -1098,11 +1099,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkTreeView" id="usuariosView">
+              <object class="GtkTreeView" id="userAdminView">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="model">usuariosQuery</property>
-                <property name="search-column">0</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>
@@ -1110,7 +1110,7 @@
                   <object class="GtkTreeViewColumn">
                     <property name="title" translatable="yes">Cuenta</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar0"/>
                       <attributes>
                         <attribute name="text">0</attribute>
                       </attributes>
@@ -1121,7 +1121,7 @@
                   <object class="GtkTreeViewColumn">
                     <property name="title" translatable="yes">Nombre</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar1"/>
                       <attributes>
                         <attribute name="text">1</attribute>
                       </attributes>
@@ -1130,9 +1130,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Apellido Paterno</property>
+                    <property name="title" translatable="yes">A. Paterno</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar2"/>
                       <attributes>
                         <attribute name="text">2</attribute>
                       </attributes>
@@ -1143,7 +1143,7 @@
                   <object class="GtkTreeViewColumn">
                     <property name="title" translatable="yes">ISBN</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar3"/>
                       <attributes>
                         <attribute name="text">3</attribute>
                       </attributes>
@@ -1152,9 +1152,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Libro Prestado</property>
+                    <property name="title" translatable="yes">Titulo</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar4"/>
                       <attributes>
                         <attribute name="text">4</attribute>
                       </attributes>
@@ -1163,9 +1163,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Fecha de Solicitud</property>
+                    <property name="title" translatable="yes">F. Solicitud</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar5"/>
                       <attributes>
                         <attribute name="text">5</attribute>
                       </attributes>
@@ -1174,9 +1174,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Fecha Límite</property>
+                    <property name="title" translatable="yes">F. Limite</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="uar6"/>
                       <attributes>
                         <attribute name="text">6</attribute>
                       </attributes>
@@ -1187,7 +1187,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -1269,11 +1269,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkTreeView" id="librosViewAdmin">
+              <object class="GtkTreeView" id="librosAdminView">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="model">librosQuery</property>
-                <property name="search-column">0</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>
@@ -1281,9 +1280,8 @@
                   <object class="GtkTreeViewColumn">
                     <property name="title" translatable="yes">ISBN</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="lar0"/>
                       <attributes>
-                        <attribute name="scale">10</attribute>
                         <attribute name="text">0</attribute>
                       </attributes>
                     </child>
@@ -1291,9 +1289,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Nombre</property>
+                    <property name="title" translatable="yes">Título</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="lar1"/>
                       <attributes>
                         <attribute name="text">1</attribute>
                       </attributes>
@@ -1304,7 +1302,7 @@
                   <object class="GtkTreeViewColumn">
                     <property name="title" translatable="yes">Editorial</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="lar2"/>
                       <attributes>
                         <attribute name="text">2</attribute>
                       </attributes>
@@ -1313,9 +1311,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Disponibles</property>
+                    <property name="title" translatable="yes">Prestados</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="lar3"/>
                       <attributes>
                         <attribute name="text">3</attribute>
                       </attributes>
@@ -1324,9 +1322,9 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Prestados</property>
+                    <property name="title" translatable="yes">Disponibles</property>
                     <child>
-                      <object class="GtkCellRendererText"/>
+                      <object class="GtkCellRendererText" id="lar4"/>
                       <attributes>
                         <attribute name="text">4</attribute>
                       </attributes>

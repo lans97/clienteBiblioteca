@@ -37,7 +37,16 @@ int main(int argc, char* argv[]){
     GObject *button;
     GError *error = NULL;
 
-    int getpk = 1;
+    GtkTreeViewColumn *lsc[4];
+    GtkCellRenderer *lsr[4];
+
+    GtkTreeViewColumn *lac[4];
+    GtkCellRenderer *lar[4];
+
+    GtkTreeViewColumn *uac[6];
+    GtkCellRenderer *uar[6];
+
+    char gladeid[14];
 
     mysql_init(&mysql);
 
@@ -54,6 +63,16 @@ int main(int argc, char* argv[]){
     }
 
     gtk_builder_connect_signals(builder, NULL);
+
+    /*
+    for(int i = 0; i < 4; i++){
+        sprintf(gladeid, "lsc%d", i);
+        lsc[i] = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, gladeid));
+        sprintf(gladeid, "lsr%d", i);
+        lsr[i] = GTK_CELL_RENDERER(gtk_builder_get_object(builder, gladeid));
+        gtk_tree_view_column_add_attribute(lsc[i], lsr[i], "text", i);
+    }
+    */
 
     gtk_main ();
 
@@ -94,6 +113,7 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
             sprintf(errorBuffer, "El número de cuenta sólo incluye números!!");
             gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
             gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+            mysql_free_result(res);
             return;
         }
     }
@@ -104,6 +124,7 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        mysql_free_result(res);
         return;
     }
 
@@ -111,12 +132,12 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        mysql_free_result(res);
         return;
     }
 
     if(row = mysql_fetch_row(res)){
         sscanf(row[0], "%d", &(admin));
-        g_print("%s\n", (admin == 1) ? "admin" : "solic");
         if (admin == 1)
             userWin = gtk_builder_get_object(builder, "adminWindow");
         else
@@ -127,8 +148,10 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
     }else{
         gtk_label_set_text(GTK_LABEL(msgLabel), "Usuario y/o Contraseña incorrectos");
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        mysql_free_result(res);
         return;
     }
+    mysql_free_result(res);
 }
 
 void regUser_clicked_cb(GtkWidget *widget, gpointer data){
@@ -170,7 +193,17 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
 
     sprintf(fnac, "%d/%d/%d", fnac_a, fnac_m, fnac_d);
 
-    // TODO: Insertar campos leídos en la base de datos
+    const char *s = cuenta;
+
+    while (*s) {
+        if (isdigit(*s++) == 0){
+            sprintf(errorBuffer, "El número de cuenta sólo incluye números!!");
+            gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+            gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+            mysql_free_result(res);
+            return;
+        }
+    }
 
     sprintf(queryBuffer, "CALL p_insertar_usuario(%s, \"%s\", \"%s\", \"%s\", \"%s\", %d, \"%s\", \"%s\", \"%s\", %d)",
             cuenta, nombre, apaterno, amaterno, carrera, semestre, fnac, mail, passwd, admin);
@@ -182,14 +215,8 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
         return;
     }
 
-    if(!(res = mysql_store_result(&mysql))){
-        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
-        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
-        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
-        return;
-    }
-        gtk_label_set_text(GTK_LABEL(msgLabel), "El usuario ha sido agregado con exito.");
-        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+    gtk_label_set_text(GTK_LABEL(msgLabel), "El usuario ha sido agregado con exito.");
+    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
 }
 
 void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
@@ -206,8 +233,28 @@ void presButton_clicked_cb(GtkWidget *widget, gpointer data){
 }
 
 void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
+
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+
+    GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
+    GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+
+    char queryBuffer[1024], errorBuffer[1024];
+
+    GtkTreeStore *libros_ts = GTK_TREE_STORE(gtk_builder_get_object(builder, "librosQuery"));
+    GtkTreeIter columna;
     // SELECT isbn libro editorial disponibles prestados from py_libros;
-    // pasar a liststore nombre en gui.glade
+
+    sprintf(queryBuffer, "");
+
+    gtk_tree_store_append(libros_ts, &columna, NULL);
+    gtk_tree_store_set(libros_ts, &columna, 0, 1, -1);
+    gtk_tree_store_set(libros_ts, &columna, 1, "LibroPrueba", -1);
+    gtk_tree_store_set(libros_ts, &columna, 2, "EditorialPrueba", -1);
+    gtk_tree_store_set(libros_ts, &columna, 3, 4, -1);
+    gtk_tree_store_set(libros_ts, &columna, 4, 0, -1);
+
 }
 
 void buscaUser_clicked_cb(GtkWidget *widget, gpointer data){
