@@ -124,7 +124,6 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
-        mysql_free_result(res);
         return;
     }
 
@@ -132,7 +131,6 @@ void loginButton_clicked_cb(GtkWidget *widget, gpointer data){
         sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
         gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
         gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
-        mysql_free_result(res);
         return;
     }
 
@@ -200,7 +198,6 @@ void regUser_clicked_cb(GtkWidget *widget, gpointer data){
             sprintf(errorBuffer, "El número de cuenta sólo incluye números!!");
             gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
             gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
-            mysql_free_result(res);
             return;
         }
     }
@@ -240,20 +237,73 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
     GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
     GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
 
+    GObject *columnCombo = gtk_builder_get_object(builder, "librosComboBusca");
+    GObject *searchEntry = gtk_builder_get_object(builder, "librosEntryBusca");
+
     char queryBuffer[1024], errorBuffer[1024];
+
+    const char *searchV = gtk_entry_get_text(GTK_ENTRY(searchEntry));
+    int column_i = gtk_combo_box_get_active(GTK_COMBO_BOX(columnCombo)); // isbn, nombre, editorial, disponible
+
+    switch (column_i) {
+        case 0:
+            const char *s = searchV;
+            while (*s) {
+                if (isdigit(*s++) == 0){
+                    sprintf(errorBuffer, "El isbn sólo incluye números!!");
+                    gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+                    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+                    return;
+                }
+            }
+            sprintf(queryBuffer, "SELECT isbn, libro, editorial, prestados, disponibles FROM py_libros WHERE isbn = %s", searchV);
+            break;
+        case 1:
+            sprintf(queryBuffer, "SELECT isbn, libro, editorial, prestados, disponibles FROM py_libros WHERE libro LIKE \"%s%s%s\"", "%", searchV, "%");
+            break;
+        case 2:
+            sprintf(queryBuffer, "SELECT isbn, libro, editorial, prestados, disponibles FROM py_libros WHERE editorial LIKE \"%s%s%s\"", "%", searchV, "%");
+            break;
+        case 3:
+            sprintf(queryBuffer, "SELECT isbn, libro, editorial, prestados, disponibles FROM py_libros WHERE disponibles > 0");
+            break;
+    }
+
+    if(mysql_query(&mysql, queryBuffer)){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    if(!(res = mysql_store_result(&mysql))){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
 
     GtkTreeStore *libros_ts = GTK_TREE_STORE(gtk_builder_get_object(builder, "librosQuery"));
     GtkTreeIter columna;
-    // SELECT isbn libro editorial disponibles prestados from py_libros;
 
-    sprintf(queryBuffer, "");
+    int isbn_r, disp_r, pres_r;
+    char titulo_r[51], editorial_r[31];
 
-    gtk_tree_store_append(libros_ts, &columna, NULL);
-    gtk_tree_store_set(libros_ts, &columna, 0, 1, -1);
-    gtk_tree_store_set(libros_ts, &columna, 1, "LibroPrueba", -1);
-    gtk_tree_store_set(libros_ts, &columna, 2, "EditorialPrueba", -1);
-    gtk_tree_store_set(libros_ts, &columna, 3, 4, -1);
-    gtk_tree_store_set(libros_ts, &columna, 4, 0, -1);
+    gtk_tree_store_clear(libros_ts);
+
+    while(row = mysql_fetch_row(res)){
+        sscanf(row[0], "%d", &isbn_r);
+        strcpy(titulo_r, row[1]);
+        strcpy(editorial_r, row[2]);
+        sscanf(row[3], "%d", &pres_r);
+        sscanf(row[4], "%d", &disp_r);
+        gtk_tree_store_append(libros_ts, &columna, NULL);
+        gtk_tree_store_set(libros_ts, &columna, 0, isbn_r, -1);
+        gtk_tree_store_set(libros_ts, &columna, 1, titulo_r, -1);
+        gtk_tree_store_set(libros_ts, &columna, 2, editorial_r, -1);
+        gtk_tree_store_set(libros_ts, &columna, 3, pres_r, -1);
+        gtk_tree_store_set(libros_ts, &columna, 4, disp_r, -1);
+    }
 
 }
 

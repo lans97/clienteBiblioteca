@@ -523,7 +523,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="usuariosQuery">
+  <object class="GtkTreeStore" id="usuariosQuery">
     <columns>
       <!-- column-name cuenta -->
       <column type="gint"/>
@@ -533,11 +533,11 @@
       <column type="gchararray"/>
       <!-- column-name isbn -->
       <column type="gint"/>
-      <!-- column-name titulo -->
+      <!-- column-name libro -->
       <column type="gchararray"/>
-      <!-- column-name f_sol -->
+      <!-- column-name fsol -->
       <column type="gchararray"/>
-      <!-- column-name f_lim -->
+      <!-- column-name flim -->
       <column type="gchararray"/>
     </columns>
   </object>
@@ -1152,7 +1152,7 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Titulo</property>
+                    <property name="title" translatable="yes">Libro</property>
                     <child>
                       <object class="GtkCellRendererText" id="uar4"/>
                       <attributes>
@@ -1174,7 +1174,7 @@
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">F. Limite</property>
+                    <property name="title" translatable="yes">F. Límite</property>
                     <child>
                       <object class="GtkCellRendererText" id="uar6"/>
                       <attributes>
@@ -1283,14 +1283,13 @@
                       <object class="GtkCellRendererText" id="lar0"/>
                       <attributes>
                         <attribute name="text">0</attribute>
-                        <attribute name="max-width-chars">14</attribute>
                       </attributes>
                     </child>
                   </object>
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn">
-                    <property name="title" translatable="yes">Titulo</property>
+                    <property name="title" translatable="yes">Título</property>
                     <child>
                       <object class="GtkCellRendererText" id="lar1"/>
                       <attributes>
