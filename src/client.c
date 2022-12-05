@@ -371,50 +371,16 @@ void buscaUser_clicked_cb(GtkWidget *widget, gpointer data){
     GObject *columnCombo;
     GObject *searchEntry;
 
-    /* Las fechas no necesitan un GtkCalendar porque son salidas y para ponerlo en tabla
-    // sólo se necesita un string.
-    // DUDA CON ESTA CREACIÓN DEL OBJETO PARA LA FECHA
-    GObject *fsoli_c = gtk_builder_get_object(builder, "fsoliCalReg");
-    // DUDA CON ESTA CREACIÓN DEL OBJETO PARA LA FECHA
-    GObject *flim_c = gtk_builder_get_object(builder, "flimCalReg");
-    */
-
-    /*
-    // DUDA!!!
-    // Como la fecha se lee de la base de datos se obtiene un string.
-    // int fsoli_d, fsoli_m, fsoli_a, flim_d, flim_m, flim_a;
-    // Aquí se deben declarar las variables que van al TreeStore
-    // (la estructura que guarda lo que se ve en pantalla.
-    // El tipo debe corresponder con los especificados en TreeStore
-    // (está en el archivo de glade)
-    // a parte declaraste las variables abajo
-    int cuenta, isbn;
-    char nombre[36], apat[36], libro[51], f_sol[12], f_lim[12];
-    */
-
-    // gtk_builder_get_object(GtkBuilder *builder, char* idObjeto)
-    // el idObjeto se define el el archivo de glade
     columnCombo = gtk_builder_get_object(builder, "usuariosComboBusca");
     searchEntry = gtk_builder_get_object(builder, "usuariosEntryBusca");
 
     char queryBuffer[1024], errorBuffer[1024];
-
-    /* No hay calendarios en la vista de búsqueda de usuarios
-    //DUDA!!!
-    gtk_calendar_get_date(GTK_CALENDAR(fsoli_c), &fsoli_a, &fsoli_m, &fsoli_d);
-    fsoli_m++;
-    gtk_calendar_get_date(GTK_CALENDAR(flim_c), &flim_a, &flim_m, &flim_d);
-    flim_m++;
-    sprintf(fsoli, "%d/%d/%d", fsoli_a, fsoli_m, fsoli_d);
-    sprintf(flim, "%d/%d/%d", flim_a, flim_m, flim_d);
-    */
 
     const char *searchV = gtk_entry_get_text(GTK_ENTRY(searchEntry));
     int column_i = gtk_combo_box_get_active(GTK_COMBO_BOX(columnCombo)); // n_cuenta, nombre, apat, isbn, libro, f_solicitud, f_limite
 
     const char *s = searchV;
 
-    // Querry para la busqueda correcta
     // SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE activa = TRUE
     switch (column_i) {
         case 0:
