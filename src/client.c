@@ -362,6 +362,155 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
 
 void buscaUser_clicked_cb(GtkWidget *widget, gpointer data){
     // SELECT n_cuenta, nombre, apat, isbn, libro, f_solicitud, f_limite
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+
+    GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
+    GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+
+    GObject *columnCombo;
+    GObject *searchEntry;
+
+    /* Las fechas no necesitan un GtkCalendar porque son salidas y para ponerlo en tabla
+    // sólo se necesita un string.
+    // DUDA CON ESTA CREACIÓN DEL OBJETO PARA LA FECHA
+    GObject *fsoli_c = gtk_builder_get_object(builder, "fsoliCalReg");
+    // DUDA CON ESTA CREACIÓN DEL OBJETO PARA LA FECHA
+    GObject *flim_c = gtk_builder_get_object(builder, "flimCalReg");
+    */
+
+    /*
+    // DUDA!!!
+    // Como la fecha se lee de la base de datos se obtiene un string.
+    // int fsoli_d, fsoli_m, fsoli_a, flim_d, flim_m, flim_a;
+    // Aquí se deben declarar las variables que van al TreeStore
+    // (la estructura que guarda lo que se ve en pantalla.
+    // El tipo debe corresponder con los especificados en TreeStore
+    // (está en el archivo de glade)
+    // a parte declaraste las variables abajo
+    int cuenta, isbn;
+    char nombre[36], apat[36], libro[51], f_sol[12], f_lim[12];
+    */
+
+    // gtk_builder_get_object(GtkBuilder *builder, char* idObjeto)
+    // el idObjeto se define el el archivo de glade
+    columnCombo = gtk_builder_get_object(builder, "usuariosComboBusca");
+    searchEntry = gtk_builder_get_object(builder, "usuariosEntryBusca");
+
+    char queryBuffer[1024], errorBuffer[1024];
+
+    /* No hay calendarios en la vista de búsqueda de usuarios
+    //DUDA!!!
+    gtk_calendar_get_date(GTK_CALENDAR(fsoli_c), &fsoli_a, &fsoli_m, &fsoli_d);
+    fsoli_m++;
+    gtk_calendar_get_date(GTK_CALENDAR(flim_c), &flim_a, &flim_m, &flim_d);
+    flim_m++;
+    sprintf(fsoli, "%d/%d/%d", fsoli_a, fsoli_m, fsoli_d);
+    sprintf(flim, "%d/%d/%d", flim_a, flim_m, flim_d);
+    */
+
+    const char *searchV = gtk_entry_get_text(GTK_ENTRY(searchEntry));
+    int column_i = gtk_combo_box_get_active(GTK_COMBO_BOX(columnCombo)); // n_cuenta, nombre, apat, isbn, libro, f_solicitud, f_limite
+
+    const char *s = searchV;
+
+    // Querry para la busqueda correcta
+    // SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE activa = TRUE
+    switch (column_i) {
+        case 0:
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE (activa = TRUE OR activa IS NULL) AND nombre LIKE \"%s%s%s\"", "%", searchV, "%");
+        break;
+        case 1:
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE (activa = TRUE OR activa IS NULL) AND a_p LIKE \"%s%s%s\"", "%", searchV, "%");
+            break;
+        case 2:
+            while (*s) {
+                if (isdigit(*s++) == 0){
+                    sprintf(errorBuffer, "El n_cuenta sólo incluye números!!");
+                    gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+                    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+                    return;
+                }
+            }
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE (activa = TRUE OR activa IS NULL) AND n_cuenta LIKE %s", searchV);
+            break;
+        case 3:
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE (activa = TRUE OR activa IS NULL) AND carrera LIKE \"%s%s%s\"", "%", searchV, "%");
+            break;
+        case 4:
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE (activa = TRUE OR activa IS NULL) AND libro LIKE \"%s%s%s\"", "%", searchV, "%");
+            break;
+        case 5:
+            while (*s) {
+                if (isdigit(*s++) == 0){
+                    sprintf(errorBuffer, "El isbn sólo incluye números!!");
+                    gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+                    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+                    return;
+                }
+            }
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE (activa = TRUE OR activa IS NULL) AND isbn LIKE %s", searchV);
+            break;
+        /* Las fechas no vienen en la especificación como parámetro de búsqueda
+        //DUDA!!!
+        case 5:
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, apat, isbn, libro, f_solicitud, f_limite, FROM py_solicitudes WHERE f_solicitud LIKE fsoli", searchV);
+            break;
+        case 6:
+            sprintf(queryBuffer, "SELECT n_cuenta, nombre, apat, isbn, libro, f_solicitud, f_limite, FROM py_solicitudes WHERE f_limite LIKE flim", searchV);
+            break;
+        */
+    }
+
+    if(mysql_query(&mysql, queryBuffer) != 0){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    if(!(res = mysql_store_result(&mysql))){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        mysql_free_result(res);
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    GtkTreeStore *usuarios_ts = GTK_TREE_STORE(gtk_builder_get_object(builder, "usuariosQuery"));
+    GtkTreeIter columna;
+
+    int cuenta_r, isbn_r;
+    char nombre_r[36], apat_r[36], libro_r[51], f_sol_r[12], f_lim_r[12];
+
+    gtk_tree_store_clear(usuarios_ts);
+
+    // SELECT n_cuenta, nombre, a_p, isbn, libro, f_solicitud, f_limite FROM py_usuarios left join py_solicitudes using(n_cuenta) left join py_libros using(isbn) WHERE activa = TRUE
+    while(row = mysql_fetch_row(res)){
+        sscanf(row[0], "%d", &cuenta_r);
+        strcpy(nombre_r, row[1]);
+        strcpy(apat_r, row[2]);
+        if (row[3] != NULL ) {
+            sscanf(row[3], "%d", &isbn_r);
+            strcpy(libro_r, row[4]);
+            strcpy(f_sol_r, row[5]);
+            strcpy(f_lim_r, row[6]);
+        }
+
+        gtk_tree_store_append(usuarios_ts, &columna, NULL);
+        gtk_tree_store_set(usuarios_ts, &columna, 0, cuenta_r, -1);
+        gtk_tree_store_set(usuarios_ts, &columna, 1, nombre_r, -1);
+        gtk_tree_store_set(usuarios_ts, &columna, 2, apat_r, -1);
+
+        if (row[3] != NULL ) {
+            gtk_tree_store_set(usuarios_ts, &columna, 3, isbn_r, -1);
+            gtk_tree_store_set(usuarios_ts, &columna, 4, libro_r, -1);
+
+            gtk_tree_store_set(usuarios_ts, &columna, 5, f_sol_r, -1);
+            gtk_tree_store_set(usuarios_ts, &columna, 6, f_lim_r, -1);
+        }
+    }
+    mysql_free_result(res);
 }
 
 void updateUser_clicked_cb(GtkWidget *widget, gpointer data){
