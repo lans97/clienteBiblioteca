@@ -864,7 +864,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkEntry" id="cuentaEntryUd">
+                      <object class="GtkEntry" id="cuentaUdEntry">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                       </object>
@@ -874,7 +874,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="semestreEntry1">
+                      <object class="GtkComboBox" id="udUserCombo">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="model">usuarioActual</property>
@@ -893,7 +893,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkEntry" id="nuevoEntryUd">
+                      <object class="GtkEntry" id="udUserEntry">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                       </object>

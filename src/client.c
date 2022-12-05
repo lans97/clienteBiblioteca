@@ -223,7 +223,7 @@ void devButton_clicked_cb(GtkWidget *widget, gpointer data){
         selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "lats"));
     }
     else{
-        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "luts"));
+        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "lsts"));
     }
 
     if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -265,7 +265,7 @@ void presButton_clicked_cb(GtkWidget *widget, gpointer data){
         selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "lats"));
     }
     else{
-        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "luts"));
+        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "lsts"));
     }
 
     if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -499,5 +499,128 @@ void buscaUser_clicked_cb(GtkWidget *widget, gpointer data){
 
 void updateUser_clicked_cb(GtkWidget *widget, gpointer data){
     // UPDATE py_usuarios SET %s = \'%s\'    , columna, valor nuevo
-}
+    MYSQL_RES *res;
+    MYSQL_ROW row;
 
+    GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
+    GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+
+    GObject *columnCombo = gtk_builder_get_object(builder, "udUserCombo");
+    GObject *cuentaEntry = gtk_builder_get_object(builder, "cuentaUdEntry");
+    GObject *textEntry = gtk_builder_get_object(builder, "udUserEntry");
+    GObject *fnCal = gtk_builder_get_object(builder, "fnacCalUd");
+    GObject *adminCheck = gtk_builder_get_object(builder, "adminCheckUd");
+
+    int column_i, fnac_a, fnac_m, fnac_d, admin;
+    const char *text_s, *cuenta_s, *s;
+    char fnac[12];
+
+    char queryBuffer[1024], errorBuffer[1024];
+
+    cuenta_s = gtk_entry_get_text(GTK_ENTRY(cuentaEntry));
+
+    s = cuenta_s;
+    while (*s) {
+        if (isdigit(*s++) == 0){
+            sprintf(errorBuffer, "El número de cuenta sólo incluye números!!");
+            gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+            gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+            return;
+        }
+    }
+
+    sprintf(queryBuffer, "SELECT COUNT(n_cuenta) FROM py_usuarios WHERE n_cuenta = %s", cuenta_s);
+
+    if(mysql_query(&mysql, queryBuffer) != 0){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    if(!(res = mysql_store_result(&mysql))){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        mysql_free_result(res);
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    if(row = mysql_fetch_row(res)){
+        if(strcmp(row[0], "0") == 0){
+            gtk_label_set_text(GTK_LABEL(msgLabel), "No hay ningun usuario con ese numero de cuenta.");
+            gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+            return;
+        }
+    }
+
+    mysql_free_result(res);
+
+    column_i = gtk_combo_box_get_active(GTK_COMBO_BOX(columnCombo));
+
+    if (column_i >= 0 && column_i < 7){
+        text_s = gtk_entry_get_text(GTK_ENTRY(textEntry));
+    }
+
+    switch (column_i) {
+    case 0:
+        //nombre
+        sprintf(queryBuffer, "UPDATE py_usuarios SET nombre = \"%s\" WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 1:
+        //apat
+        sprintf(queryBuffer, "UPDATE py_usuarios SET a_p = \"%s\" WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 2:
+        //amat
+        sprintf(queryBuffer, "UPDATE py_usuarios SET a_m = \"%s\" WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 3:
+        //carrera
+        sprintf(queryBuffer, "UPDATE py_usuarios SET carrera = \"%s\" WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 4:
+        //semestre
+        s = text_s;
+        while (*s) {
+            if (isdigit(*s++) == 0){
+                sprintf(errorBuffer, "El semestre debe ser un número");
+                gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+                gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+                return;
+            }
+        }
+        sprintf(queryBuffer, "UPDATE py_usuarios SET semestre = %s WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 5:
+        //correo
+        sprintf(queryBuffer, "UPDATE py_usuarios SET mail = \"%s\" WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 6:
+        //contra
+        sprintf(queryBuffer, "UPDATE py_usuarios SET pswd = \"%s\" WHERE n_cuenta = %s", text_s, cuenta_s);
+        break;
+    case 7:
+        //f_nac
+        gtk_calendar_get_date(GTK_CALENDAR(fnCal), &fnac_a, &fnac_m, &fnac_d);
+        fnac_m++;
+        sprintf(fnac, "%d-%d-%d", fnac_a, fnac_m, fnac_d);
+        sprintf(queryBuffer, "UPDATE py_usuarios SET f_nac = \"%s\" WHERE n_cuenta = %s", fnac, cuenta_s);
+        break;
+    case 8:
+        //admin
+        admin = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(adminCheck));
+        sprintf(queryBuffer, "UPDATE py_usuarios SET tipo_usuario = %d WHERE n_cuenta = %s", admin, cuenta_s);
+        break;
+    }
+
+    if(mysql_query(&mysql, queryBuffer) != 0){
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    gtk_label_set_text(GTK_LABEL(msgLabel), "El campo seleccionado ha sido actualizado");
+    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+}

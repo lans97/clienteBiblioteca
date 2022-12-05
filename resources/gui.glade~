@@ -113,7 +113,7 @@
                 <property name="can-focus">True</property>
                 <property name="model">librosQuery</property>
                 <child internal-child="selection">
-                  <object class="GtkTreeSelection"/>
+                  <object class="GtkTreeSelection" id="lsts"/>
                 </child>
                 <child>
                   <object class="GtkTreeViewColumn" id="lsc0">
@@ -1118,7 +1118,7 @@
                     <property name="can-focus">True</property>
                     <property name="model">usuariosQuery</property>
                     <child internal-child="selection">
-                      <object class="GtkTreeSelection"/>
+                      <object class="GtkTreeSelection" id="uats"/>
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn">
@@ -1295,7 +1295,7 @@
                     <property name="can-focus">True</property>
                     <property name="model">librosQuery</property>
                     <child internal-child="selection">
-                      <object class="GtkTreeSelection"/>
+                      <object class="GtkTreeSelection" id="lats"/>
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn">
