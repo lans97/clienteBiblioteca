@@ -39,15 +39,6 @@ int main(int argc, char* argv[]){
     GObject *button;
     GError *error = NULL;
 
-    GtkTreeViewColumn *lsc[4];
-    GtkCellRenderer *lsr[4];
-
-    GtkTreeViewColumn *lac[4];
-    GtkCellRenderer *lar[4];
-
-    GtkTreeViewColumn *uac[6];
-    GtkCellRenderer *uar[6];
-
     char gladeid[14];
 
     mysql_init(&mysql);
@@ -65,16 +56,6 @@ int main(int argc, char* argv[]){
     }
 
     gtk_builder_connect_signals(builder, NULL);
-
-    /*
-    for(int i = 0; i < 4; i++){
-        sprintf(gladeid, "lsc%d", i);
-        lsc[i] = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, gladeid));
-        sprintf(gladeid, "lsr%d", i);
-        lsr[i] = GTK_CELL_RENDERER(gtk_builder_get_object(builder, gladeid));
-        gtk_tree_view_column_add_attribute(lsc[i], lsr[i], "text", i);
-    }
-    */
 
     gtk_main ();
 
@@ -227,6 +208,43 @@ void msgButton_clicked_cb(GtkWidget *widget, gpointer data){
 
 void devButton_clicked_cb(GtkWidget *widget, gpointer data){
     // CALL p_resuelve_solicitud(usuario activo)
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+
+    GObject *msgWin = gtk_builder_get_object(builder, "msgWindow");
+    GObject *msgLabel = gtk_builder_get_object(builder, "labelMsg");
+
+    GtkTreeSelection *selection;
+    GtkTreeIter iter;
+    GtkTreeModel *model;
+    gint isbn_s;
+
+    if(_userIsAdmin){
+        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "lats"));
+    }
+    else{
+        selection = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "luts"));
+    }
+
+    if (!gtk_tree_selection_get_selected(selection, &model, &iter))
+        return;
+
+    gtk_tree_model_get(model, &iter, 0, &isbn_s, -1);
+
+    char queryBuffer[1024], errorBuffer[1024];
+
+    sprintf(queryBuffer, "CALL p_resuelve_solicitud(%i, %i)", _userID, isbn_s);
+
+    if (mysql_query(&mysql, queryBuffer) != 0) {
+        sprintf(errorBuffer, "Error: %s", mysql_error(&mysql));
+        gtk_label_set_text(GTK_LABEL(msgLabel), errorBuffer);
+        gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+        return;
+    }
+
+    gtk_label_set_text(GTK_LABEL(msgLabel), "Su devolución ha sido registrada con exito.");
+    gtk_widget_set_visible(GTK_WIDGET(msgWin), TRUE);
+
 }
 
 void presButton_clicked_cb(GtkWidget *widget, gpointer data){
