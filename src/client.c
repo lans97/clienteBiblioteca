@@ -312,10 +312,11 @@ void buscaLibro_clicked_cb(GtkWidget *widget, gpointer data) {
 
     const char *searchV = gtk_entry_get_text(GTK_ENTRY(searchEntry));
     int column_i = gtk_combo_box_get_active(GTK_COMBO_BOX(columnCombo)); // isbn, nombre, editorial, disponible
+    const char *s = searchV;
 
     switch (column_i) {
         case 0:
-            const char *s = searchV;
+            s = searchV;
             while (*s) {
                 if (isdigit(*s++) == 0){
                     sprintf(errorBuffer, "El isbn sólo incluye números!!");
