@@ -1,2 +1,4 @@
-bin/*
-bin/int/*
+bin
+int
+.cache
+compile_commands.json
