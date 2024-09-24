@@ -28,7 +28,7 @@ MYSQL mysql;
 unsigned char _userIsAdmin;
 unsigned int _userID;
 
-int main(int argc, char* argv[]){
+int client_main(int argc, char* argv[]){
     gtk_init (&argc, &argv);
 
     MYSQL_RES *res;

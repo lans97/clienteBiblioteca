@@ -14,14 +14,14 @@ BEGIN
     DECLARE f_disponibles INT;
     DECLARE f_prestados INT;
 
-    SET @f_disponibles = (SELECT disponibles FROM py_libros WHERE isbn = v_id_isbn);
-    SET @f_prestados = (SELECT prestados FROM py_libros WHERE isbn = v_id_isbn);
+    SET @f_disponibles = (SELECT disponibles FROM libros WHERE isbn = v_id_isbn);
+    SET @f_prestados = (SELECT prestados FROM libros WHERE isbn = v_id_isbn);
 
     IF @f_disponibles > 0 THEN
         SELECT DATE(curdate()) INTO f_solicitud_v;
         SELECT DATE_ADD(f_solicitud_v, INTERVAL 8 DAY) INTO f_limite_v;
 
-        INSERT INTO py_solicitudes
+        INSERT INTO solicitudes
         VALUES (
             NULL,
             v_n_cuenta,
@@ -31,7 +31,7 @@ BEGIN
             TRUE
         );
 
-        UPDATE py_libros
+        UPDATE libros
         SET
             disponibles = @f_disponibles - 1,
             prestados = @f_prestados + 1

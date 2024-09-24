@@ -1,7 +1,7 @@
-DELETE FROM py_usuarios;
-DELETE FROM py_libros;
+DELETE FROM usuarios;
+DELETE FROM libros;
 
-INSERT INTO py_usuarios
+INSERT INTO usuarios
 VALUES
 /*
  n_cuenta, nombre,              a_p,        a_m,          carrera,      semestre,  f_nac,        correo,               pswd,    tipo_usuario
@@ -11,7 +11,7 @@ VALUES
 (200490,   'Luis Angel',       'Silva',    'Mondragon',  'ITCT',        6,        '1997/09/25', 'luisilva@gmail.com', '12345',  1),
 (781620,   'Marlene',          'Serrano',  'Rodríguez',  'ITCT',        4,        '2000/03/15', 'marlene@gmail.com',  '10s11e', 1);
 
-INSERT INTO py_libros (libro, editorial, prestados, disponibles)
+INSERT INTO libros (libro, editorial, prestados, disponibles)
 VALUES
 /*
   libro,                         editorial      prestados,  disponibles

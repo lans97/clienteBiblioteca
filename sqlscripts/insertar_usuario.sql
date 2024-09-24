@@ -23,7 +23,7 @@ proc_lable: BEGIN
         nombre,
         a_p,
         a_m
-        FROM py_usuarios;
+        FROM usuarios;
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_fin = 1;
 
@@ -49,7 +49,7 @@ proc_lable: BEGIN
 
     CLOSE cursor_insertar_usuario;
 
-    INSERT INTO py_usuarios
+    INSERT INTO usuarios
     VALUES(
         v_cuenta,
         v_nombre,
