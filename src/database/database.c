@@ -9,8 +9,14 @@ void database_open(Database *db) {
         fprintf(stderr, "Error al conectarse: %s\n", mysql_error(&db->mysql));
         exit(EXIT_FAILURE);
     }
+    #ifdef DEBUG
+    fprintf(stdout, "Database connected\n");
+    #endif
 }
 
 void database_close(Database *db) {
     mysql_close(&db->mysql);
+    #ifdef DEBUG
+    fprintf(stdout, "Database disconected\n");
+    #endif
 }

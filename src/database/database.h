@@ -2,6 +2,7 @@
 #define DATABASE_H
 
 #include <mysql/mysql.h>
+#include "database.h"
 
 struct database_auth {
     int id;

@@ -31,7 +31,7 @@
 ######################
 # Compiler and flags
 CC = gcc
-CFLAGS = `pkg-config --cflags gtk+-3.0` -Wall -Wextra
+CFLAGS = `pkg-config --cflags gtk+-3.0` -Wall -Wextra -I src/
 LDFLAGS = `pkg-config --libs gtk+-3.0` -lnsl -lm -lz -lmysqlclient
 
 # Dirs
@@ -43,7 +43,7 @@ BIN_DIR = bin
 TARGET = $(BIN_DIR)/BibClient
 
 # Source and obj's
-SRC = $(wildcard $(SRC_DIR)/*.c)
+SRC = $(shell find $(SRC_DIR) -name '*.c')
 OBJ = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 
 # Rule: Build bin
@@ -55,6 +55,7 @@ $(TARGET): $(OBJ) | $(BIN_DIR)
 
 # Rule: Compile obj's
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Create dirs
@@ -66,6 +67,7 @@ $(OBJ_DIR):
 
 # Rule: Debug
 debug: CFLAGS += -g
+debug: CFLAGS += -DDEBUG
 debug: $(TARGET)
 
 # Cleanup
