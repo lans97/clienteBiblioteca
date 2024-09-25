@@ -32,7 +32,7 @@
 # Compiler and flags
 CC = gcc
 CFLAGS = `pkg-config --cflags gtk+-3.0` -Wall -Wextra -I src/
-LDFLAGS = `pkg-config --libs gtk+-3.0` -lnsl -lm -lz -lmysqlclient
+LDFLAGS = `pkg-config --libs gtk+-3.0` -lnsl -lm -lz -lmysqlclient -rdynamic
 
 # Dirs
 SRC_DIR = src

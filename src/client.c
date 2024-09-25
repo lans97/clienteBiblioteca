@@ -3,11 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-
-#define DB_SERVER "localhost"
-#define DB_USER "ic21lsm"
-#define DB_PASSWD "200490"
-#define DB_NAME "ic21lsm"
+#include "secrets.h"
 
 // for debug
 static void print_hello (GtkWidget *widget, gpointer data);
@@ -28,7 +24,7 @@ MYSQL mysql;
 unsigned char _userIsAdmin;
 unsigned int _userID;
 
-int client_main(int argc, char* argv[]){
+int main(int argc, char* argv[]){
     gtk_init (&argc, &argv);
 
     MYSQL_RES *res;

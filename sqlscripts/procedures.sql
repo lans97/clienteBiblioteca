@@ -42,7 +42,7 @@ proc_lable: BEGIN
 
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_fin = 1;
 
-    OPEN cursor_insertar_usuario; 
+    OPEN cursor_insertar_usuario;
 
     SET v_fin = 0;
         lee_insertar_usuario: LOOP
@@ -56,13 +56,13 @@ proc_lable: BEGIN
         v_f_nac_p,
         v_correo_p,
         v_pswd_p,
-        v_tipo_usuario_p; 
+        v_tipo_usuario_p;
     IF v_fin = 1 THEN
         LEAVE lee_insertar_usuario;
     END IF;
 
     IF v_nombre_p = v_nombre AND v_apaterno_p = v_apaterno AND v_amaterno_p = v_amaterno THEN
-    
+
     SELECT CONCAT ("El usuario", v_nombre_p, " ", v_apaterno_p, " ", v_amaterno_p, " ya existe en la base de datos.") AS msg
     LEAVE proc_lable;
 
@@ -113,9 +113,9 @@ BEGIN
     SELECT f_disponibles:= disponibles, f_prestados:=prestados FROM py_libros WHERE isbn = v_id_isbn;
 
     DECLARE cursor_solicitudes CURSOR FOR SELECT activa FROM py_solicitudes WHERE n_cuenta = v_n_cuenta AND activa = TRUE;
-    
+
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_activa = FALSE;
-    
+
     OPEN cursor_solicitudes;
     FETCH FIRST FROM cursor_solicitudes INTO f_activa;
     CLOSE cursor_solicitudes;
@@ -133,13 +133,13 @@ BEGIN
             f_limite_v
             TRUE
         );
-        
+
         UPDATE py_libros
         SET
             disponibles = f_disponibles - 1,
             prestados = f_prestados + 1
         WHERE v_id_isbn = isbn;
-        
+
         SELECT CONCAT('Tu solcitud se realizó con éxito con id', v_id_solicitud) AS msg;
     ELSE
         SELECT CONCAT('No hay libros disponibles con el ISBN ', v_id_isbn) AS msg;
@@ -164,9 +164,9 @@ BEGIN
     DECLARE f_activa BOOLEAN DEFAULT FALSE;
 
     DECLARE cursor_solicitudes CURSOR FOR SELECT id_solicitud, activa FROM py_solicitudes WHERE n_cuenta = v_n_cuenta AND activa = TRUE;
-    
+
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_activa = FALSE;
-    
+
     OPEN cursor_solicitudes;
     FETCH FIRST FROM cursor_solicitudes INTO f_id_solicitud, f_activa;
     CLOSE cursor_solicitudes;
@@ -174,18 +174,18 @@ BEGIN
     IF f_activa THEN
         SELECT f_isbn:=isbn FROM py_solicitudes WHERE n_cuenta = v_n_cuenta AND activa = TRUE;
         SELECT f_disponibles:= disponibles, f_prestados:=prestados FROM py_libros WHERE isbn = f_isbn;
-        
+
         UPDATE py_solicitudes
         SET
             activa = FALSE
         WHERE id_solicitud = f_id_solicitud;
-        
+
         UPDATE py_libros
         SET
             prestados = f_prestados - 1;
             disponible = f_disponibles + 1;
         WHERE isbn = f_isbn;
-        
+
         SELECT CONCAT('Tu solcitud se resolvió con éxito') AS msg;
     ELSE
         SELECT CONCAT('Tu número de cuenta no tiene una solicitud activa') AS msg;

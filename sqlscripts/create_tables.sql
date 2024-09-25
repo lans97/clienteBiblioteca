@@ -1,8 +1,8 @@
-DROP TABLE solicitudes;
-DROP TABLE usuarios;
-DROP TABLE libros;
+DROP TABLE py_solicitudes;
+DROP TABLE py_usuarios;
+DROP TABLE py_libros;
 
-CREATE TABLE usuarios(
+CREATE TABLE py_usuarios(
     n_cuenta        INTEGER     PRIMARY KEY,
     nombre          VARCHAR(35) NOT NULL,
     a_p             VARCHAR(35) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE usuarios(
     tipo_usuario    BOOLEAN     NOT NULL
 );
 
-CREATE TABLE libros(
+CREATE TABLE py_libros(
     isbn INTEGER PRIMARY KEY AUTO_INCREMENT,
     libro VARCHAR(50) NOT NULL,
     editorial VARCHAR(30) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE libros(
     disponibles INTEGER NOT NULL
 );
 
-CREATE TABLE solicitudes(
+CREATE TABLE py_solicitudes(
     id_solicitud        INTEGER PRIMARY KEY AUTO_INCREMENT,
     n_cuenta            INTEGER,
     isbn                INTEGER,
